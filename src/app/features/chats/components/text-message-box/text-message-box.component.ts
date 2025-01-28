@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  input,
-  output,
-} from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
@@ -13,7 +7,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './text-message-box.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TextMessageBoxComponent {
   placeholder = input<string>('');

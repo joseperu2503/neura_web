@@ -1,4 +1,8 @@
-import { inject, Injectable, InjectionToken } from '@angular/core';
+import {
+  inject,
+  Injectable,
+  InjectionToken,
+} from '@angular/core';
 import { JwtPayload, jwtDecode } from 'jwt-decode';
 import { SsrCookieService } from 'ngx-cookie-service-ssr';
 
@@ -35,7 +39,11 @@ export class TokenService {
   }
 
   getToken() {
-    const token = this.cookieService.get(TOKEN);
+    const tokenServer = inject(ACCESS_TOKEN, {
+      optional: true,
+    });
+
+    const token = tokenServer ?? this.cookieService.get(TOKEN);
     console.log({ token });
     return token;
   }

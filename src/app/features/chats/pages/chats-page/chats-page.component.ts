@@ -1,25 +1,51 @@
-import { ChangeDetectionStrategy, Component, type OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  makeStateKey,
+  TransferState,
+  type OnInit,
+} from '@angular/core';
 import { TextMessageBoxComponent } from '../../components/text-message-box/text-message-box.component';
+import { ChatsService } from '../../services/chats.service';
+import { CommonModule } from '@angular/common';
+
+// Define una clave para el estado transferido
+const CHATS_KEY = makeStateKey<any[]>('chats');
 
 @Component({
   selector: 'app-chats-page',
   standalone: true,
-  imports: [TextMessageBoxComponent],
+  imports: [TextMessageBoxComponent, CommonModule],
   templateUrl: './chats-page.component.html',
   styleUrl: './chats-page.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ChatsPageComponent implements OnInit {
-  ngOnInit(): void {}
+  private chatsService = inject(ChatsService);
+  private transferState = inject(TransferState);
 
-  chatsSidebar = [
-    'Instalar FVM en macOS paso a paso',
-    'Apache Server Deployment Failure Log',
-    'Saludo inicial y oferta de ayuda.',
-    'Saludo inicial y oferta de ayuda.',
-    'Saludo inicial y oferta de ayuda.',
-    'Optimizing Laravel Excel Large Data Imports',
-    'SQL Update Issue with Null Scheduling',
-    'Spring Boot JPA Application Log Analysis',
-  ];
+  chats: any[] = [];
+
+  ngOnInit(): void {
+    this.getChats();
+  }
+
+  getChats() {
+    // Intenta obtener los chats desde el TransferState
+    const storedChats = this.transferState.get(CHATS_KEY, null);
+
+    if (storedChats) {
+      // Si los chats están en el TransferState, úsalos
+      this.chats = storedChats;
+    } else {
+      // Si no están en el TransferState, haz la solicitud al servidor
+      this.chatsService.getChats().subscribe({
+        next: (res: any) => {
+          this.chats = res;
+          console.log(this.chats.length)
+          // Almacena los chats en el TransferState para que estén disponibles en el cliente
+          this.transferState.set(CHATS_KEY, res);
+        },
+      });
+    }
+  }
 }
