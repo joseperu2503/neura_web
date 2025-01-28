@@ -28,4 +28,12 @@ export class TextMessageBoxComponent {
     this.onMessage.emit(prompt ?? '');
     this.form.reset();
   }
+
+  adjustHeight(event: Event): void {
+    const textarea = event.target as HTMLTextAreaElement;
+    textarea.style.height = 'auto'; // Resetea la altura para calcular el scrollHeight
+    const maxHeight = 280; // Máxima altura permitida
+    const newHeight = Math.min(textarea.scrollHeight, maxHeight); // Limita el tamaño al máximo
+    textarea.style.height = `${newHeight}px`; // Ajusta la altura
+  }
 }

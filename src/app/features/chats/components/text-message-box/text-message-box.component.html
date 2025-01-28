@@ -6,11 +6,12 @@
   <textarea
     type="text"
     autofocus
-    class="w-full outline-none h-[140px] text-white text-lg leading-7 resize-none bg-transparent"
+    class="w-full outline-none text-white text-lg leading-7 resize-none bg-transparent"
     [placeholder]="placeholder()"
     formControlName="prompt"
     [autocomplete]="disableCorrections() ? 'on' : 'off'"
     [spellcheck]="disableCorrections() ? 'on' : 'off'"
+    (input)="adjustHeight($event)"
   ></textarea>
   <div class="mt-2 flex justify-end">
     <button
