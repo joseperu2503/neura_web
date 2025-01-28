@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { guestGuard } from './core/guards/guest/guest.guard';
-import { AuthGuard } from './core/guards/auth/auth.guard';
+import { authGuard } from './core/guards/auth/auth.guard';
 
 export const routes: Routes = [
   {
@@ -12,7 +12,7 @@ export const routes: Routes = [
     path: 'chats',
     loadComponent: () =>
       import('./features/chats/pages/chats-page/chats-page.component'),
-    canActivate: [AuthGuard],
+    canActivate: [authGuard],
   },
   {
     path: 'login',
