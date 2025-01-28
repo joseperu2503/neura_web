@@ -15,13 +15,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './login-page.component.html',
 })
 export default class LoginPageComponent {
-  constructor(private authRepository: AuthService, private router: Router) {
-    console.log('dddd');
-  }
-
-  ngOnInit() {
-    console.log('rrrrr');
-  }
+  constructor(private authService: AuthService, private router: Router) {}
 
   loginForm: FormGroup = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -33,9 +27,9 @@ export default class LoginPageComponent {
 
     const { email, password } = this.loginForm.value;
 
-    this.authRepository.login(email, password).subscribe({
+    this.authService.login(email, password).subscribe({
       next: (user) => {
-        this.authRepository.saveToken(user.accessToken);
+        this.authService.saveToken(user.accessToken);
         this.router.navigate(['/chats']);
       },
       error: (err) => {
