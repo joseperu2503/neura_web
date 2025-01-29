@@ -1,5 +1,6 @@
 import {
   Injectable,
+  PLATFORM_ID,
   TransferState,
   inject,
   makeStateKey,
@@ -7,6 +8,9 @@ import {
 } from '@angular/core';
 
 import { ChatsService } from '../services/chats.service';
+import { Message } from '../interfaces/message.interface';
+import { isPlatformServer } from '@angular/common';
+import { Chat } from '../interfaces/get-chats-response.interface';
 
 const CHATS_KEY = makeStateKey<any[]>('chats');
 
@@ -16,28 +20,47 @@ const CHATS_KEY = makeStateKey<any[]>('chats');
 export class ChatsStore {
   private chatsService = inject(ChatsService);
   private transferState = inject(TransferState);
+  private platformId = inject(PLATFORM_ID);
 
-  chats = signal<any[]>([]);
+  chats = signal<Chat[]>([]);
   firstMessage = signal<string | null>(null);
+  messages = signal<{ [key: string]: Message[] }>({});
 
   getChats() {
+    console.log('getChats');
     // Intenta obtener los chats desde el TransferState
     const storedChats = this.transferState.get(CHATS_KEY, null);
 
     if (storedChats) {
       // Si los chats están en el TransferState, úsalos
       this.chats.set(storedChats);
+      this.transferState.set(CHATS_KEY, null);
     } else {
       // Si no están en el TransferState, haz la solicitud al servidor
       this.chatsService.getChats().subscribe({
         next: (res: any) => {
           this.chats.set(res);
-          console.log(this.chats().length);
+
           // Almacena los chats en el TransferState para que estén disponibles en el cliente
-          this.transferState.set(CHATS_KEY, res);
+          if (isPlatformServer(this.platformId)) {
+            this.transferState.set(CHATS_KEY, res);
+          }
         },
       });
     }
+  }
+
+  getChat(chatId: string) {
+    this.chatsService.getChat(chatId).subscribe({
+      next: (res) => {
+        this.messages.update((prev) => {
+          return {
+            ...prev,
+            [res._id]: res.messages,
+          };
+        });
+      },
+    });
   }
 
   setFirstMessage(prompt: string) {
@@ -48,5 +71,14 @@ export class ChatsStore {
     const firstMessage = this.firstMessage();
     this.firstMessage.set(null);
     return firstMessage;
+  }
+
+  addMessage(chatId: string, message: Message) {
+    this.messages.update((prev) => {
+      return {
+        ...prev,
+        [chatId]: prev[chatId] ? [...prev[chatId], message] : [message],
+      };
+    });
   }
 }

@@ -9,7 +9,7 @@ export interface GetChatResponse {
 }
 
 export interface Message {
-  readonly role: string;
+  readonly role: 'user' | 'assistant' | 'system';
   readonly content: string;
   readonly createdAt: Date;
 }

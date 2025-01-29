@@ -9,13 +9,12 @@ import {
 } from '@angular/core';
 import { TextMessageBoxComponent } from '../../components/text-message-box/text-message-box.component';
 import { CommonModule } from '@angular/common';
-import { firstValueFrom } from 'rxjs';
 import { ChatsService } from '../../services/chats.service';
-import { GetChatResponse } from '../../interfaces/get-chat-response.interface';
 import { UserMessageComponent } from '../../components/user-message/user-message.component';
 import { AssistantMessageComponent } from '../../components/assistant-message/assistant-message.component';
 import { TypingLoaderComponent } from '../../components/typing-loader/typing-loader.component';
 import { ChatsStore } from '../../stores/chats.store';
+import { Message } from '../../interfaces/message.interface';
 
 @Component({
   selector: 'app-chat-page',
@@ -39,15 +38,13 @@ export default class ChatPageComponent {
 
   private resizeObserver?: ResizeObserver;
 
-  chat = signal<GetChatResponse | null>(null);
   isLoading = signal<boolean>(false);
 
-  ngOnInit(): void {
-    const firstMessage = this.chatsStore.getFirstMessage();
-    if (firstMessage) {
-      this.handleCompletion(firstMessage, true);
-    }
+  get messages(): Message[] {
+    return this.chatsStore.messages()[this.chatId()] ?? [];
   }
+
+  ngOnInit(): void {}
 
   ngAfterViewInit() {
     this.initScrollListener();
@@ -81,41 +78,22 @@ export default class ChatPageComponent {
 
   async handleCompletion(prompt: string, isNewChat = false) {
     this.isLoading.set(true);
-    this.chat.update((prev) => {
-      if (!prev) return null;
-
-      return {
-        ...prev,
-        messages: [
-          ...prev.messages,
-          {
-            role: 'user',
-            content: prompt,
-            createdAt: new Date(),
-          },
-        ],
-      };
+    this.chatsStore.addMessage(this.chatId(), {
+      role: 'user',
+      content: prompt,
+      createdAt: new Date(),
     });
+
     this.chatsService.completion(this.chatId(), prompt).subscribe({
       next: (res) => {
-        console.log(res);
         this.isLoading.set(false);
 
-        this.chat.update((prev) => {
-          if (!prev) return null;
-
-          return {
-            ...prev,
-            messages: [
-              ...prev.messages,
-              {
-                role: 'assistant',
-                content: res.response,
-                createdAt: new Date(),
-              },
-            ],
-          };
+        this.chatsStore.addMessage(this.chatId(), {
+          role: 'assistant',
+          content: res.response,
+          createdAt: new Date(),
         });
+
         if (isNewChat) {
           this.chatsStore.getChats();
         }
@@ -128,17 +106,16 @@ export default class ChatPageComponent {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['chatId']) {
-      this.getChat();
+      const firstMessage = this.chatsStore.getFirstMessage();
+      if (firstMessage) {
+        this.handleCompletion(firstMessage, true);
+      } else {
+        this.getChat();
+      }
     }
   }
 
   getChat() {
-    console.log(this.chatId());
-    this.chatsService.getChat(this.chatId()).subscribe({
-      next: (res) => {
-        console.log(res);
-        this.chat.set(res);
-      },
-    });
+    this.chatsStore.getChat(this.chatId());
   }
 }

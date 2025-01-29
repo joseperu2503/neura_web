@@ -3,6 +3,7 @@ import { ApiService } from '../../../core/services/api/api.service';
 import { CreateChatResponse } from '../interfaces/create-chat-response.interface';
 import { GetChatResponse } from '../interfaces/get-chat-response.interface';
 import { CompletionResponse } from '../interfaces/completion-response.interface';
+import { GetChatsResponse } from '../interfaces/get-chats-response.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,7 @@ export class ChatsService {
   private apiService = inject(ApiService);
 
   getChats() {
-    return this.apiService.get(`/chats`);
+    return this.apiService.get<GetChatsResponse>(`/chats`);
   }
 
   createChat() {
