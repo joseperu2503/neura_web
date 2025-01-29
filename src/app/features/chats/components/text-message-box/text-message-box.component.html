@@ -12,10 +12,14 @@
     [autocomplete]="disableCorrections() ? 'on' : 'off'"
     [spellcheck]="disableCorrections() ? 'on' : 'off'"
     (input)="adjustHeight($event)"
-  ></textarea>
+    (keydown.enter)="handleSubmit()"
+  >
+
+  ></textarea
+  >
   <div class="mt-2 flex justify-end">
     <button
-      class="bg-green-700 w-8 h-8 rounded-full flex items-center justify-center hover:bg-green-600 cursor-pointer"
+      class="bg-green-700 w-8 h-8 rounded-full flex items-center justify-center hover:bg-green-600 cursor-pointer disabled:bg-zinc-600"
       type="submit"
       [disabled]="form.invalid"
     >
