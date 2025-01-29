@@ -40,5 +40,10 @@ export default class ChatPageComponent {
 
   getChat() {
     console.log(this.chatId());
+    this.chatsService.getChat(this.chatId()).subscribe({
+      next: (res) => {
+        console.log(res);
+      },
+    });
   }
 }
