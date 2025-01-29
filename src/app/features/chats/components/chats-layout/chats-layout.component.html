@@ -13,7 +13,8 @@
       @for (item of chats; track item._id) {
 
       <div
-        class="text-white text-sm hover:bg-zinc-700 py-3 px-4 truncate rounded-xl cursor-pointer"
+        (click)="goChat(item._id)"
+        class="text-white text-sm hover:bg-zinc-700 h-11 flex items-center px-4 truncate rounded-xl cursor-pointer"
       >
         {{ item.title }}
       </div>
