@@ -1,5 +1,8 @@
-<div class="relative w-full flex flex-col h-screen overflow-y-auto">
-  <div class="max-w-3xl w-full mx-auto">
+<div
+  class="relative w-full flex flex-col h-screen overflow-y-auto"
+  #messagesContainer
+>
+  <div class="max-w-3xl w-full mx-auto pt-6" #contentDiv>
     @for (message of chat()?.messages; track $index) { @if(message.role ==
     'user'){
     <app-user-message [text]="message.content" />
@@ -8,7 +11,12 @@
     <div>
       <app-assistant-message [text]="message.content" />
     </div>
-    } }
+    } } @if (isLoading()) {
+
+    <div class="mb-4">
+      <app-typing-loader />
+    </div>
+    }
   </div>
   <div class="sticky bottom-0 max-w-3xl w-full mx-auto mt-auto bg-zinc-800">
     <app-text-message-box
