@@ -15,6 +15,7 @@ import { GetChatResponse } from '../../interfaces/get-chat-response.interface';
 import { UserMessageComponent } from '../../components/user-message/user-message.component';
 import { AssistantMessageComponent } from '../../components/assistant-message/assistant-message.component';
 import { TypingLoaderComponent } from '../../components/typing-loader/typing-loader.component';
+import { ChatsStore } from '../../stores/chats.store';
 
 @Component({
   selector: 'app-chat-page',
@@ -31,6 +32,7 @@ import { TypingLoaderComponent } from '../../components/typing-loader/typing-loa
 export default class ChatPageComponent {
   private chatsService = inject(ChatsService);
   public chatId = input.required<string>();
+  chatsStore = inject(ChatsStore);
 
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
   @ViewChild('contentDiv') contentDiv!: ElementRef;
@@ -39,6 +41,13 @@ export default class ChatPageComponent {
 
   chat = signal<GetChatResponse | null>(null);
   isLoading = signal<boolean>(false);
+
+  ngOnInit(): void {
+    const firstMessage = this.chatsStore.getFirstMessage();
+    if (firstMessage) {
+      this.handleCompletion(firstMessage, true);
+    }
+  }
 
   ngAfterViewInit() {
     this.initScrollListener();
@@ -70,18 +79,7 @@ export default class ChatPageComponent {
     container.scrollTop = container.scrollHeight;
   }
 
-  async createChat() {
-    try {
-      const res = await firstValueFrom(this.chatsService.createChat());
-      console.log(res);
-      return res;
-    } catch (error) {
-      console.error('Error:', error);
-      throw error;
-    }
-  }
-
-  async handleCompletion(prompt: string) {
+  async handleCompletion(prompt: string, isNewChat = false) {
     this.isLoading.set(true);
     this.chat.update((prev) => {
       if (!prev) return null;
@@ -118,6 +116,9 @@ export default class ChatPageComponent {
             ],
           };
         });
+        if (isNewChat) {
+          this.chatsStore.getChats();
+        }
       },
       error: (err) => {
         this.isLoading.set(false);

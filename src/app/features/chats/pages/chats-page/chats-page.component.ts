@@ -4,6 +4,7 @@ import { ChatsService } from '../../services/chats.service';
 import { CommonModule } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
+import { ChatsStore } from '../../stores/chats.store';
 
 @Component({
   selector: 'app-chats-page',
@@ -14,6 +15,7 @@ import { Router } from '@angular/router';
 export default class ChatsPageComponent {
   private chatsService = inject(ChatsService);
   private readonly router = inject(Router);
+  chatsStore = inject(ChatsStore);
 
   async createChat() {
     try {
@@ -27,7 +29,7 @@ export default class ChatsPageComponent {
 
   async handleCompletion(prompt: string) {
     const chat = await this.createChat();
-
+    this.chatsStore.setFirstMessage(prompt);
     this.router.navigate(['/chats', chat._id]);
   }
 }

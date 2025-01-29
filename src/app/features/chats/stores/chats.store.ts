@@ -18,6 +18,7 @@ export class ChatsStore {
   private transferState = inject(TransferState);
 
   chats = signal<any[]>([]);
+  firstMessage = signal<string | null>(null);
 
   getChats() {
     // Intenta obtener los chats desde el TransferState
@@ -37,5 +38,15 @@ export class ChatsStore {
         },
       });
     }
+  }
+
+  setFirstMessage(prompt: string) {
+    this.firstMessage.set(prompt);
+  }
+
+  getFirstMessage() {
+    const firstMessage = this.firstMessage();
+    this.firstMessage.set(null);
+    return firstMessage;
   }
 }
