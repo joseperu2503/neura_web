@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { ApiService } from '../../../core/services/api/api.service';
+import { CreateChatResponse } from '../interfaces/create-chat-response.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -11,5 +12,13 @@ export class ChatsService {
 
   getChats() {
     return this.apiService.get(`/chats`);
+  }
+
+  createChat() {
+    return this.apiService.post<CreateChatResponse>(`/chats`, {});
+  }
+
+  getChat(chatId: string) {
+    return this.apiService.get(`/chats/${chatId}`);
   }
 }

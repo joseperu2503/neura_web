@@ -1,17 +1,18 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, input, SimpleChanges } from '@angular/core';
 import { TextMessageBoxComponent } from '../../components/text-message-box/text-message-box.component';
-import { ChatsService } from '../../services/chats.service';
 import { CommonModule } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
+import { ChatsService } from '../../services/chats.service';
 
 @Component({
-  selector: 'app-chats-page',
+  selector: 'app-chat-page',
   standalone: true,
   imports: [TextMessageBoxComponent, CommonModule],
-  templateUrl: './chats-page.component.html',
+  templateUrl: './chat-page.component.html',
 })
-export default class ChatsPageComponent {
+export default class ChatPageComponent {
   private chatsService = inject(ChatsService);
+  public chatId = input.required<string>();
 
   async createChat() {
     try {
@@ -29,5 +30,15 @@ export default class ChatsPageComponent {
       const chat = await this.createChat();
       chatId = chat._id;
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['chatId']) {
+      this.getChat();
+    }
+  }
+
+  getChat() {
+    console.log(this.chatId());
   }
 }

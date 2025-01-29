@@ -1,29 +1,7 @@
-<div class="bg-zinc-800 h-screen w-full flex">
-  <div class="w-[300px] bg-zinc-900 h-screen">
-    <div class="h-40 px-6 pt-6">
-      <h1 class="text-xl text-white mb-6">Neura AI</h1>
-      <button
-        class="bg-green-700 text-white rounded-xl px-2 py-2 hover:bg-green-600 cursor-pointer"
-      >
-        New chat
-      </button>
-    </div>
-
-    <div class="flex flex-col gap-4 px-2">
-      @for (item of chats; track item._id) {
-
-      <div
-        class="text-white text-sm hover:bg-zinc-700 py-3 px-4 truncate rounded-xl cursor-pointer"
-      >
-        {{ item.title }}
-      </div>
-      }
-    </div>
-  </div>
-
-  <div class="relative w-full flex flex-col">
-    <div class="sticky bottom-0 max-w-[800px] w-full mx-auto mt-auto mb-4">
-      <app-text-message-box></app-text-message-box>
-    </div>
+<div class="relative w-full flex flex-col h-full">
+  <div class="sticky bottom-0 max-w-[800px] w-full mx-auto mt-auto mb-4">
+    <app-text-message-box
+      (onMessage)="handleCompletion($event)"
+    ></app-text-message-box>
   </div>
 </div>

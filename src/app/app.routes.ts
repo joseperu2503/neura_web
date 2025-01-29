@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { guestGuard } from './core/guards/guest/guest.guard';
 import { authGuard } from './core/guards/auth/auth.guard';
+import { ChatsLayoutComponent } from './features/chats/components/chats-layout/chats-layout.component';
 
 export const routes: Routes = [
   {
@@ -9,11 +10,24 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'chats',
-    loadComponent: () =>
-      import('./features/chats/pages/chats-page/chats-page.component'),
-    canActivate: [authGuard],
+    path: '',
+    component: ChatsLayoutComponent,
+    children: [
+      {
+        path: 'chats',
+        loadComponent: () =>
+          import('./features/chats/pages/chats-page/chats-page.component'),
+        canActivate: [authGuard],
+      },
+      {
+        path: 'chats/:chatId',
+        loadComponent: () =>
+          import('./features/chats/pages/chat-page/chat-page.component'),
+        canActivate: [authGuard],
+      },
+    ],
   },
+
   {
     path: 'login',
     loadComponent: () =>
