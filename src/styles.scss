@@ -25,3 +25,17 @@ body {
   scrollbar-color: #888 #404040;
   scrollbar-width: thin;
 }
+
+markdown {
+  h3 {
+    @apply text-xl font-bold mt-2 mb-4;
+  }
+
+  p {
+    @apply text-base mb-4;
+  }
+
+  pre {
+    @apply bg-zinc-900 p-4 rounded-xl text-white text-sm;
+  }
+}
