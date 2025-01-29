@@ -3,6 +3,7 @@ import { TextMessageBoxComponent } from '../../components/text-message-box/text-
 import { ChatsService } from '../../services/chats.service';
 import { CommonModule } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-chats-page',
@@ -12,11 +13,11 @@ import { firstValueFrom } from 'rxjs';
 })
 export default class ChatsPageComponent {
   private chatsService = inject(ChatsService);
+  private readonly router = inject(Router);
 
   async createChat() {
     try {
       const res = await firstValueFrom(this.chatsService.createChat());
-      console.log(res);
       return res;
     } catch (error) {
       console.error('Error:', error);
@@ -24,10 +25,9 @@ export default class ChatsPageComponent {
     }
   }
 
-  async handleCompletion(prompt: string, chatId?: string) {
-    if (!chatId) {
-      const chat = await this.createChat();
-      chatId = chat._id;
-    }
+  async handleCompletion(prompt: string) {
+    const chat = await this.createChat();
+
+    this.router.navigate(['/chats', chat._id]);
   }
 }
