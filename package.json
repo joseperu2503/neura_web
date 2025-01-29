@@ -21,6 +21,7 @@
     "@angular/platform-server": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@angular/ssr": "^18.2.12",
+    "clipboard": "^2.0.11",
     "express": "^4.18.2",
     "jwt-decode": "^4.0.0",
     "ngx-cookie-service-ssr": "^18.0.0",

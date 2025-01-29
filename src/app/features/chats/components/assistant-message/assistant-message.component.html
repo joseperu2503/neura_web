@@ -9,7 +9,7 @@
     <div
       class="relative ml-3 py-2 min-h-11 px-4 text-gray-300 flex items-center justify-start leading-7"
     >
-      <markdown>{{ text() }}</markdown>
+      <markdown clipboard>{{ text() }}</markdown>
       @if ( audioUrl() ) {
       <audio controls [src]="audioUrl()" autoplay class="w-full"></audio>
       } @if ( imageInfo() ) {
