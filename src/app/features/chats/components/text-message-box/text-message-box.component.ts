@@ -9,7 +9,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
   templateUrl: './text-message-box.component.html',
 })
 export class TextMessageBoxComponent {
-  placeholder = input<string>('');
+  placeholder = input<string>('Ask Neura anything');
   disableCorrections = input<boolean>(false);
 
   onMessage = output<string>();
