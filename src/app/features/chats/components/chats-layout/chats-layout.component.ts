@@ -41,6 +41,10 @@ export class ChatsLayoutComponent {
     }
   }
 
+  newChat() {
+    this.router.navigate(['/chats']);
+  }
+
   goChat(chatId: string) {
     this.router.navigate(['/chats', chatId]);
   }
