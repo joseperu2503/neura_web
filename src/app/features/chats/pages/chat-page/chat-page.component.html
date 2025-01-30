@@ -1,8 +1,8 @@
 <div
-  class="relative w-full flex flex-col h-screen overflow-y-auto"
+  class="relative w-full flex flex-col h-screen overflow-y-auto bg-zinc-800"
   #messagesContainer
 >
-  <div class="max-w-3xl w-full mx-auto pt-6" #contentDiv>
+  <div class="max-w-3xl w-full mx-auto pt-6 px-6 flex flex-col gap-4" #contentDiv>
     @for (message of messages; track message) { @if(message.role == 'user'){
     <app-user-message [text]="message.content" />
 
@@ -17,7 +17,10 @@
     </div>
     }
   </div>
-  <div class="sticky bottom-0 max-w-3xl w-full mx-auto mt-auto bg-zinc-800">
+  <div
+    class="sticky bottom-0 max-w-3xl w-full mx-auto mt-auto bg-zinc-800 flex flex-col justify-center px-6"
+    [ngClass]="{ 'h-full': !chatId() && messages.length == 0 }"
+  >
     <app-text-message-box
       [onMessageDisabled]="isLoading() || isCompleting()"
       (onMessage)="handleCompletion($event)"

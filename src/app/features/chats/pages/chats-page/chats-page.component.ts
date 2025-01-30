@@ -29,7 +29,7 @@ export default class ChatsPageComponent {
 
   async handleCompletion(prompt: string) {
     const chat = await this.createChat();
-    this.chatsStore.setFirstMessage(prompt);
+    // this.chatsStore.setFirstMessage(prompt);
     this.router.navigate(['/chats', chat._id]);
   }
 }

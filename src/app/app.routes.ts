@@ -6,7 +6,8 @@ import { ChatsLayoutComponent } from './features/chats/components/chats-layout/c
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/login',
+    loadComponent: () =>
+      import('./features/chats/pages/chat-page/chat-page.component'),
     pathMatch: 'full',
   },
   {
@@ -16,7 +17,7 @@ export const routes: Routes = [
       {
         path: 'chats',
         loadComponent: () =>
-          import('./features/chats/pages/chats-page/chats-page.component'),
+          import('./features/chats/pages/chat-page/chat-page.component'),
         canActivate: [authGuard],
       },
       {

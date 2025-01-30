@@ -15,6 +15,8 @@ import { AssistantMessageComponent } from '../../components/assistant-message/as
 import { TypingLoaderComponent } from '../../components/typing-loader/typing-loader.component';
 import { ChatsStore } from '../../stores/chats.store';
 import { Message } from '../../interfaces/message.interface';
+import { firstValueFrom } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-chat-page',
@@ -30,8 +32,9 @@ import { Message } from '../../interfaces/message.interface';
 })
 export default class ChatPageComponent {
   private chatsService = inject(ChatsService);
-  public chatId = input.required<string>();
+  public chatId = input<string | null>(null);
   public chatsStore = inject(ChatsStore);
+  private readonly router = inject(Router);
 
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
   @ViewChild('contentDiv') contentDiv!: ElementRef;
@@ -43,7 +46,10 @@ export default class ChatPageComponent {
   public abortSignal = signal(new AbortController());
 
   get messages(): Message[] {
-    return this.chatsStore.messages()[this.chatId()] ?? [];
+    if (this.chatId() === null) {
+      return [];
+    }
+    return this.chatsStore.messages()[this.chatId()!] ?? [];
   }
 
   ngOnInit(): void {}
@@ -78,56 +84,79 @@ export default class ChatPageComponent {
     container.scrollTop = container.scrollHeight;
   }
 
+  async createChat() {
+    try {
+      const res = await firstValueFrom(this.chatsService.createChat());
+      return res;
+    } catch (error) {
+      console.error('Error:', error);
+      throw error;
+    }
+  }
+
   async handleCompletion(prompt: string, isNewChat = false) {
-    this.abortSignal().abort();
-    this.abortSignal.set(new AbortController());
-    this.isLoading.set(true);
-    this.isCompleting.set(true);
+    if (this.chatId() == null) {
+      const chat = await this.createChat();
+      this.chatsStore.setFirstMessage(prompt);
+      this.router.navigate(['/chats', chat._id]);
+    } else {
+      this.abortSignal().abort();
+      this.abortSignal.set(new AbortController());
+      this.isLoading.set(true);
+      this.isCompleting.set(true);
 
-    this.chatsStore.addMessage(this.chatId(), {
-      role: 'user',
-      content: prompt,
-      createdAt: new Date(),
-    });
-
-    this.chatsService
-      .completion(this.chatId(), prompt, this.abortSignal().signal)
-      .subscribe({
-        next: (text) => {
-          this.chatsStore.addMessage(
-            this.chatId(),
-            {
-              role: 'assistant',
-              content: text,
-              createdAt: new Date(),
-            },
-            !this.isLoading()
-          );
-          this.isLoading.set(false);
-        },
-        error: (err) => {
-          this.isLoading.set(false);
-          this.isCompleting.set(false);
-        },
-        complete: () => {
-          this.isLoading.set(false);
-          this.isCompleting.set(false);
-        },
+      this.chatsStore.addMessage(this.chatId()!, {
+        role: 'user',
+        content: prompt,
+        createdAt: new Date(),
       });
+
+      this.chatsService
+        .completion(this.chatId()!, prompt, this.abortSignal().signal)
+        .subscribe({
+          next: (text) => {
+            this.chatsStore.addMessage(
+              this.chatId()!,
+              {
+                role: 'assistant',
+                content: text,
+                createdAt: new Date(),
+              },
+              !this.isLoading()
+            );
+            this.isLoading.set(false);
+          },
+          error: (err) => {
+            this.isLoading.set(false);
+            this.isCompleting.set(false);
+          },
+          complete: () => {
+            this.isLoading.set(false);
+            this.isCompleting.set(false);
+            if (isNewChat) {
+              this.chatsStore.getChats();
+            }
+          },
+        });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['chatId']) {
+      console.log('ChatId changed', this.chatId());
       const firstMessage = this.chatsStore.getFirstMessage();
+      console.log('First message:', firstMessage);
       if (firstMessage) {
         this.handleCompletion(firstMessage, true);
       } else {
-        this.getChat();
+        if (this.chatId() != null) {
+          this.getChat();
+        }
       }
     }
   }
 
   getChat() {
-    this.chatsStore.getChat(this.chatId());
+    this.chatsStore.getChat(this.chatId()!);
   }
 }
