@@ -1,13 +1,13 @@
 <div class="h-screen w-full flex">
   <div class="w-[260px] min-w-[260px] bg-dark-4 h-screen flex flex-col">
     <div class="px-6 pt-10 pb-6">
-      <div class="flex gap-3 items-center mb-8">
+      <div class="flex gap-4 items-center mb-10">
         <img src="/assets/icons/neura_white.svg" alt="logo" class="w-8" />
-        <img src="/assets/icons/neura_text_white.svg" alt="logo" class="h-4" />
+        <img src="/assets/icons/neura_text_white.svg" alt="logo" class="h-5" />
       </div>
       <button
         (click)="newChat()"
-        class="flex items-center justify-center bg-primary text-white rounded-xl px-6 h-12 hover:bg-primary-2 cursor-pointer"
+        class="flex items-center gap-2 justify-center bg-primary text-white rounded-xl px-6 h-12 hover:bg-primary-2 cursor-pointer"
       >
         <img src="/assets/icons/new-chat.svg" alt="" class="w-6 h-6" />
 
@@ -30,7 +30,7 @@
     <div class="px-6 pb-6">
       <button
         (click)="logout()"
-        class="flex gap-2 justify-center bg-dark-5 text-white w-full rounded-xl px-2 py-2 hover:bg-dark-4 cursor-pointer"
+        class="flex items-center gap-2 justify-center bg-dark-5 text-white w-full rounded-xl px-2 h-10 hover:bg-dark-4 cursor-pointer"
       >
         <img src="/assets/icons/logout.svg" alt="" class="w-6 h-6" />
         Logout
