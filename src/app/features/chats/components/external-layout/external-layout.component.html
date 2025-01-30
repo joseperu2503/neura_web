@@ -1,0 +1,25 @@
+<div class="w-full">
+  <div
+    class="fixed h-20 w-full bg-zinc-800 top-0 left-0 z-10 px-6 flex gap-2 items-center justify-between"
+  >
+    <div class="flex gap-2 items-center">
+      <img src="/assets/icons/neura.svg" alt="logo" class="w-8" />
+      <img src="/assets/icons/neura_text.svg" alt="logo" class="h-4" />
+    </div>
+
+    <div class="flex gap-2 items-center">
+      <button
+        (click)="onSignIn()"
+        class="bg-green-700 text-white rounded-xl px-2 py-2 hover:bg-green-600 cursor-pointer"
+      >
+        Sign in
+      </button>
+      <button
+        class="bg-green-700 text-white rounded-xl px-2 py-2 hover:bg-green-600 cursor-pointer"
+      >
+        Sign up
+      </button>
+    </div>
+  </div>
+  <router-outlet />
+</div>
