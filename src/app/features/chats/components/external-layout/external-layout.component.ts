@@ -13,4 +13,8 @@ export class ExternalLayoutComponent {
   onSignIn() {
     this.route.navigate(['/login']);
   }
+
+  onSignUp() {
+    this.route.navigate(['/register']);
+  }
 }

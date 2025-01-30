@@ -20,6 +20,18 @@ export class AuthService {
     });
   }
 
+  register(
+    email: string,
+    password: string,
+    passwordConfirmation: string
+  ): Observable<User> {
+    return this.apiService.post<User>(`/auth/register`, {
+      email,
+      password,
+      passwordConfirmation,
+    });
+  }
+
   logout() {
     this.tokenService.removeToken();
     this.router.navigate(['/']);
