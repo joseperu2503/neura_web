@@ -1,7 +1,7 @@
 <form
   [formGroup]="form"
   (ngSubmit)="handleSubmit()"
-  class="flex flex-col rounded-3xl bg-zinc-700 w-full p-4"
+  class="flex flex-col rounded-3xl bg-dark-2 w-full p-4"
 >
   <textarea
     type="text"
@@ -15,11 +15,11 @@
   </textarea>
   <div class="mt-2 flex justify-end">
     <button
-      class="bg-green-700 w-8 h-8 rounded-full flex items-center justify-center hover:bg-green-600 cursor-pointer disabled:bg-zinc-600"
+      class="bg-primary w-8 h-8 rounded-full flex items-center justify-center hover:bg-green-600 cursor-pointer disabled:bg-zinc-600"
       type="submit"
       [disabled]="form.invalid || onMessageDisabled()"
     >
-      <img src="/assets/icons/send.svg" alt="" class="w-6 h-6" />
+      <img src="/assets/icons/send.svg" alt="" class="w-5 h-5" />
     </button>
   </div>
 </form>

@@ -165,7 +165,7 @@ export default class ChatPageComponent {
     this.internalChatId.set(chatId);
 
     const firstMessage = this.chatsStore.getFirstMessage();
-
+    console.log(firstMessage)
     if (firstMessage) {
       this.handleCompletion(firstMessage, true);
     } else {
