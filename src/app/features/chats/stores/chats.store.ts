@@ -73,11 +73,18 @@ export class ChatsStore {
     return firstMessage;
   }
 
-  addMessage(chatId: string, message: Message) {
+  addMessage(chatId: string, message: Message, pop = false) {
     this.messages.update((prev) => {
+      // Si pop es true, eliminamos el último mensaje antes de agregar el nuevo
+      const updatedMessages = prev[chatId]
+        ? pop
+          ? [...prev[chatId].slice(0, -1), message] // Eliminar el último y agregar el nuevo
+          : [...prev[chatId], message] // Solo agregar el nuevo mensaje
+        : [message]; // Si no hay mensajes, solo agregar el primero
+
       return {
         ...prev,
-        [chatId]: prev[chatId] ? [...prev[chatId], message] : [message],
+        [chatId]: updatedMessages,
       };
     });
   }

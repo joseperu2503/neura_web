@@ -31,14 +31,14 @@ import { Message } from '../../interfaces/message.interface';
 export default class ChatPageComponent {
   private chatsService = inject(ChatsService);
   public chatId = input.required<string>();
-  chatsStore = inject(ChatsStore);
+  public chatsStore = inject(ChatsStore);
 
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
   @ViewChild('contentDiv') contentDiv!: ElementRef;
 
   private resizeObserver?: ResizeObserver;
-
-  isLoading = signal<boolean>(false);
+  public isLoading = signal<boolean>(false);
+  public abortSignal = signal(new AbortController());
 
   get messages(): Message[] {
     return this.chatsStore.messages()[this.chatId()] ?? [];
@@ -77,6 +77,8 @@ export default class ChatPageComponent {
   }
 
   async handleCompletion(prompt: string, isNewChat = false) {
+    this.abortSignal().abort();
+    this.abortSignal.set(new AbortController());
     this.isLoading.set(true);
     this.chatsStore.addMessage(this.chatId(), {
       role: 'user',
@@ -84,24 +86,24 @@ export default class ChatPageComponent {
       createdAt: new Date(),
     });
 
-    this.chatsService.completion(this.chatId(), prompt).subscribe({
-      next: (res) => {
-        this.isLoading.set(false);
-
-        this.chatsStore.addMessage(this.chatId(), {
-          role: 'assistant',
-          content: res.response,
-          createdAt: new Date(),
-        });
-
-        if (isNewChat) {
-          this.chatsStore.getChats();
-        }
-      },
-      error: (err) => {
-        this.isLoading.set(false);
-      },
-    });
+    this.chatsService
+      .completion(this.chatId(), prompt, this.abortSignal().signal)
+      .subscribe({
+        next: (text) => {
+          this.chatsStore.addMessage(
+            this.chatId(),
+            {
+              role: 'assistant',
+              content: text,
+              createdAt: new Date(),
+            },
+            !this.isLoading()
+          );
+          this.isLoading.set(false);
+        },
+        error: (err) => console.error('Error en stream', err),
+        complete: () => console.log('Stream finalizado'),
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {

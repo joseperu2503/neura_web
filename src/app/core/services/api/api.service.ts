@@ -19,4 +19,13 @@ export class ApiService {
     const url = `${this.apiUrl}${query}`;
     return this.http.post<T>(url, body, options);
   }
+
+  postStream(query: string, body: any) {
+    const url = `${this.apiUrl}${query}`;
+    return this.http.post(url, body, {
+      observe: 'events',
+      responseType: 'text',
+      reportProgress: true,
+    });
+  }
 }
