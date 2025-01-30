@@ -19,6 +19,7 @@
   </div>
   <div class="sticky bottom-0 max-w-3xl w-full mx-auto mt-auto bg-zinc-800">
     <app-text-message-box
+      [onMessageDisabled]="isLoading() || isCompleting()"
       (onMessage)="handleCompletion($event)"
     ></app-text-message-box>
     <div class="h-4"></div>

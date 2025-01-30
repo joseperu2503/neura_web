@@ -38,6 +38,8 @@ export default class ChatPageComponent {
 
   private resizeObserver?: ResizeObserver;
   public isLoading = signal<boolean>(false);
+  public isCompleting = signal<boolean>(false);
+
   public abortSignal = signal(new AbortController());
 
   get messages(): Message[] {
@@ -80,6 +82,8 @@ export default class ChatPageComponent {
     this.abortSignal().abort();
     this.abortSignal.set(new AbortController());
     this.isLoading.set(true);
+    this.isCompleting.set(true);
+
     this.chatsStore.addMessage(this.chatId(), {
       role: 'user',
       content: prompt,
@@ -101,8 +105,14 @@ export default class ChatPageComponent {
           );
           this.isLoading.set(false);
         },
-        error: (err) => console.error('Error en stream', err),
-        complete: () => console.log('Stream finalizado'),
+        error: (err) => {
+          this.isLoading.set(false);
+          this.isCompleting.set(false);
+        },
+        complete: () => {
+          this.isLoading.set(false);
+          this.isCompleting.set(false);
+        },
       });
   }
 
