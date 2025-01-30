@@ -11,6 +11,8 @@ import {
   HttpEvent,
   HttpEventType,
 } from '@angular/common/http';
+import { AuthService } from '../../auth/services/auth.service';
+import { TokenService } from '../../../core/services/token/token.service';
 
 @Injectable({
   providedIn: 'root',
@@ -19,13 +21,19 @@ export class ChatsService {
   constructor() {}
 
   private apiService = inject(ApiService);
+  private tokenService = inject(TokenService);
 
   getChats() {
     return this.apiService.get<GetChatsResponse>(`/chats`);
   }
 
   createChat() {
-    return this.apiService.post<CreateChatResponse>(`/chats`, {});
+    let url = `/chats`;
+    if (!this.tokenService.validateToken().isValid) {
+      url = `/chats/guest`;
+    }
+
+    return this.apiService.post<CreateChatResponse>(url, {});
   }
 
   getChat(chatId: string) {
@@ -37,6 +45,11 @@ export class ChatsService {
     content: string,
     abortSignal: AbortSignal
   ): Observable<string> {
+    let url = `/chats/completion`;
+    if (!this.tokenService.validateToken().isValid) {
+      url = `/chats/guest/completion`;
+    }
+
     return new Observable<string>((observer) => {
       const abortSubject = new Subject<void>(); // Notificador de cancelación
 
@@ -47,23 +60,20 @@ export class ChatsService {
         observer.complete(); // Finaliza el Observable
       });
 
-      this.apiService
-        .postStream('/chats/completion', { chatId, content })
-        .subscribe({
-          next: async (event: HttpEvent<string>) => {
-            if (event.type === HttpEventType.DownloadProgress) {
-              const response = (event as HttpDownloadProgressEvent)
-                .partialText!;
+      this.apiService.postStream(url, { chatId, content }).subscribe({
+        next: async (event: HttpEvent<string>) => {
+          if (event.type === HttpEventType.DownloadProgress) {
+            const response = (event as HttpDownloadProgressEvent).partialText!;
 
-              if (response != '') {
-                observer.next(response);
-              }
-            } else if (event.type === HttpEventType.Response) {
-              observer.complete();
+            if (response != '') {
+              observer.next(response);
             }
-          },
-          error: (err) => observer.error(err),
-        });
+          } else if (event.type === HttpEventType.Response) {
+            observer.complete();
+          }
+        },
+        error: (err) => observer.error(err),
+      });
     });
   }
 }

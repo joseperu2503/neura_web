@@ -1,6 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, input, output } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, input, output } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-text-message-box',
@@ -14,13 +19,12 @@ export class TextMessageBoxComponent {
 
   onMessage = output<string>();
 
-  public fb = inject(FormBuilder);
-
-  public form = this.fb.group({
-    prompt: ['', Validators.required],
+  public form = new FormGroup({
+    prompt: new FormControl('', Validators.required),
   });
 
   handleSubmit() {
+    event?.preventDefault();
     if (this.form.invalid) return;
 
     const { prompt } = this.form.value;

@@ -1,8 +1,4 @@
-import {
-  inject,
-  Injectable,
-  InjectionToken,
-} from '@angular/core';
+import { inject, Injectable, InjectionToken } from '@angular/core';
 import { JwtPayload, jwtDecode } from 'jwt-decode';
 import { SsrCookieService } from 'ngx-cookie-service-ssr';
 
@@ -33,17 +29,16 @@ interface InvalidToken {
 })
 export class TokenService {
   cookieService = inject(SsrCookieService);
+  tokenServer = inject(ACCESS_TOKEN, {
+    optional: true,
+  });
 
   saveToken(token: string) {
     this.cookieService.set(TOKEN, token, { expires: 365, path: '/' });
   }
 
   getToken() {
-    const tokenServer = inject(ACCESS_TOKEN, {
-      optional: true,
-    });
-
-    const token = tokenServer ?? this.cookieService.get(TOKEN);
+    const token = this.tokenServer ?? this.cookieService.get(TOKEN);
     console.log({ token });
     return token;
   }

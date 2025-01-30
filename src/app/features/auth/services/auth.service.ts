@@ -22,7 +22,7 @@ export class AuthService {
 
   logout() {
     this.tokenService.removeToken();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
   }
 
   saveToken(token: string): void {
