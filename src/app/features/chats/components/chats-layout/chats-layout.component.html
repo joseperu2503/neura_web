@@ -4,13 +4,15 @@
       <h1 class="text-xl text-white mb-6">Neura AI</h1>
       <button
         (click)="newChat()"
-        class="bg-green-700 text-white rounded-xl px-2 py-2 hover:bg-green-600 cursor-pointer"
+        class="flex gap-2 bg-green-700 text-white rounded-xl px-2 py-2 hover:bg-green-600 cursor-pointer"
       >
+        <img src="/assets/icons/new-chat.svg" alt="" class="w-6 h-6" />
+
         New chat
       </button>
     </div>
 
-    <div class="felx-1 flex flex-col gap-1 px-2 overflow-y-auto">
+    <div class="flex-1 flex flex-col gap-1 px-2 overflow-y-auto">
       @for (item of chatsStore.chats(); track item._id) {
 
       <div
@@ -20,6 +22,15 @@
         {{ item.title }}
       </div>
       }
+    </div>
+
+    <div class="px-6 mb-6">
+      <button
+        class="flex gap-2 justify-center bg-zinc-700 text-white w-full rounded-xl px-2 py-2 hover:bg-zinc-600 cursor-pointer"
+      >
+        <img src="/assets/icons/logout.svg" alt="" class="w-6 h-6" />
+        Logout
+      </button>
     </div>
   </div>
 
