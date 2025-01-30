@@ -7,7 +7,11 @@ module.exports = {
         "dark-1": "#181a20",
         "dark-2": "#262a36",
         "dark-3": "#36383f",
-        primary: "#17ce92",
+        "dark-4": "#20222a",
+        "dark-5": "#373c43",
+
+        primary: "#11a575",
+        "primary-2": "#0f8861",
       },
     },
   },
