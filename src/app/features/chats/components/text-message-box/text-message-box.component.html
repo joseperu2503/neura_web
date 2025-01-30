@@ -6,7 +6,7 @@
   <textarea
     type="text"
     autofocus
-    class="w-full outline-none text-white text-base leading-7 resize-none bg-transparent placeholder:text-gray-500 placeholder:font-semibold"
+    class="w-full outline-none text-white text-base leading-7 resize-none bg-transparent placeholder:text-dark-6"
     [placeholder]="placeholder()"
     formControlName="prompt"
     (input)="adjustHeight($event)"
@@ -15,11 +15,18 @@
   </textarea>
   <div class="mt-2 flex justify-end">
     <button
-      class="bg-primary w-8 h-8 rounded-full flex items-center justify-center hover:bg-green-600 cursor-pointer disabled:bg-zinc-600"
+      class="bg-primary w-8 h-8 rounded-full flex items-center justify-center hover:bg-primary-2 cursor-pointer disabled:bg-dark-8"
       type="submit"
       [disabled]="form.invalid || onMessageDisabled()"
     >
+      @if (form.invalid || onMessageDisabled()) {
+
+      <img src="/assets/icons/send_disabled.svg" alt="" class="w-5 h-5" />
+
+      }@else {
       <img src="/assets/icons/send.svg" alt="" class="w-5 h-5" />
+
+      }
     </button>
   </div>
 </form>
