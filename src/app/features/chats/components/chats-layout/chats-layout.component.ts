@@ -1,6 +1,7 @@
 import { Component, inject, makeStateKey } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { ChatsStore } from '../../stores/chats.store';
+import { AuthService } from '../../../auth/services/auth.service';
 
 const CHATS_KEY = makeStateKey<any[]>('chats');
 
@@ -11,7 +12,8 @@ const CHATS_KEY = makeStateKey<any[]>('chats');
   templateUrl: './chats-layout.component.html',
 })
 export class ChatsLayoutComponent {
-  chatsStore = inject(ChatsStore);
+  public chatsStore = inject(ChatsStore);
+  private authService = inject(AuthService);
 
   private readonly router = inject(Router);
 
@@ -25,5 +27,9 @@ export class ChatsLayoutComponent {
 
   goChat(chatId: string) {
     this.router.navigate(['/chats', chatId]);
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }
