@@ -14,6 +14,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/chats/pages/chat-page/chat-page.component'),
         pathMatch: 'full',
+        canActivate: [guestGuard],
       },
     ],
   },
