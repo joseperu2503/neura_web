@@ -1,12 +1,15 @@
-FROM node:20.15.1-alpine3.20 AS build
+FROM node:20.15.1-alpine3.20 AS deps
 WORKDIR /app
 COPY package*.json .
-COPY scripts .
-RUN npm install
+RUN npm ci
+
+FROM node:20.15.1-alpine3.20 AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
 
-FROM node:20.15.1-alpine3.20
+FROM node:20.15.1-alpine3.20 AS runner
 WORKDIR /app
-COPY --from=build /app/dist/neura_web .
+COPY --from=builder /app/dist/neura_web .
 CMD ["node","server/server.mjs"]
