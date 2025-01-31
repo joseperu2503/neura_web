@@ -43,3 +43,5 @@ Thumbs.db
 src/environments/environment.development.ts
 src/environments/environment.ts
 .env
+.env.prod
+.env.dev

@@ -4,8 +4,8 @@
   "scripts": {
     "ng": "ng",
     "envs": "node ./scripts/set-envs.js",
-    "start": "npm run envs && ng serve",
-    "build": "npm run envs && ng build",
+    "start": "NODE_ENV=development npm run envs && ng serve",
+    "build": "NODE_ENV=production npm run envs && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:neura_web": "node dist/neura_web/server/server.mjs"

@@ -1,0 +1,8 @@
+FROM node:20.15.1-alpine3.20
+WORKDIR /app
+COPY package*.json ./
+RUN npm install -g @angular/cli
+RUN npm install
+COPY ./scripts ./scripts
+RUN npm run envs
+CMD ["ng", "serve", "--host", "0.0.0.0"]

@@ -1,0 +1,15 @@
+services:
+  ui:
+    container_name: neura_web_dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "${PORT}:4200"
+    image: neura_web_dev
+    restart: always
+    env_file:
+      - .env.dev
