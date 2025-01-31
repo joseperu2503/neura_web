@@ -27,7 +27,6 @@ export class ChatsStore {
   messages = signal<{ [key: string]: Message[] }>({});
 
   getChats() {
-    console.log('getChats');
     // Intenta obtener los chats desde el TransferState
     const storedChats = this.transferState.get(CHATS_KEY, null);
 
