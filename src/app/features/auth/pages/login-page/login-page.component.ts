@@ -36,8 +36,14 @@ export default class LoginPageComponent {
         this.router.navigate(['/chats']);
       },
       error: (err) => {
-        this.snackbarService.show('Login failed', 'error');
-        console.error('Login failed', err);
+        if (err.status === 401) {
+          this.snackbarService.show('Invalid email or password', 'error');
+        } else {
+          this.snackbarService.show(
+            'Something went wrong. Please try again later.',
+            'error'
+          );
+        }
       },
     });
   }
