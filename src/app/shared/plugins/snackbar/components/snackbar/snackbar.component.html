@@ -1,0 +1,9 @@
+<div class="container" [class]="snackbar().type">
+  <div class="message">
+    <img [src]="icon" alt="snackbar-icon" class="icon" />
+    <p>{{ snackbar().message }}</p>
+  </div>
+  <div class="close" (click)="onClose()">
+    <img src="assets/icons/close.svg" alt="close" />
+  </div>
+</div>

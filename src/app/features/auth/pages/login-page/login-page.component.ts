@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { SnackbarService } from '../../../../shared/plugins/snackbar';
 
 @Component({
   selector: 'app-login-page',
@@ -17,6 +18,7 @@ import { AuthService } from '../../services/auth.service';
 export default class LoginPageComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private snackbarService = inject(SnackbarService);
 
   loginForm: FormGroup = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -34,6 +36,7 @@ export default class LoginPageComponent {
         this.router.navigate(['/chats']);
       },
       error: (err) => {
+        this.snackbarService.show('Login failed', 'error');
         console.error('Login failed', err);
       },
     });
