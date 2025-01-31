@@ -6,7 +6,8 @@
     class="max-w-4xl w-full mx-auto pt-6 px-6 flex flex-col gap-4"
     #contentDiv
   >
-    @for (message of messages; track message.content) { @if(message.role == 'user'){
+    @for (message of messages; track message.content) { @if(message.role ==
+    'user'){
     <app-user-message [text]="message.content" />
 
     } @else{
@@ -24,7 +25,7 @@
     class="sticky bottom-0 max-w-4xl w-full mx-auto mt-auto bg-dark-1 flex flex-col justify-center px-6"
     [ngClass]="{ 'h-full': !internalChatId() && messages.length == 0 }"
   >
-    @if (messages.length == 0) {
+    @if (!internalChatId() && messages.length == 0) {
     <div class="flex flex-col items-center mb-8 gap-4">
       <div class="flex gap-2 items-center mx-auto">
         <img src="/assets/icons/neura.svg" alt="logo" class="w-10" />

@@ -39,7 +39,7 @@ export class TokenService {
 
   getToken() {
     const token = this.tokenServer ?? this.cookieService.get(TOKEN);
-    console.log({ token });
+    // console.log({ token });
     return token;
   }
 
