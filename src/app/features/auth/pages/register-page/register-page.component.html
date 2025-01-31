@@ -48,14 +48,30 @@
             >
               Password
             </label>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              placeholder="••••••••"
-              class="bg-dark-2 rounded-lg border border-dark-3 placeholder-gray-400 text-gray-200 focus:ring-primary-600 focus:border-primary-600 outline-none block w-full p-2.5"
-              formControlName="password"
-            />
+            <div class="relative">
+              <input
+                [type]="showPassword() ? 'text' : 'password'"
+                name="password"
+                id="password"
+                placeholder="••••••••"
+                class="bg-dark-2 rounded-lg border border-dark-3 placeholder-gray-400 text-white outline-none block w-full p-2.5"
+                formControlName="password"
+              />
+              <div
+                (click)="toggleShowPassword()"
+                class="flex items-center justify-center absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full hover:bg-dark-3 cursor-pointer"
+              >
+                <img
+                  [src]="
+                    showPassword()
+                      ? '/assets/icons/eye-closed.svg'
+                      : '/assets/icons/eye.svg'
+                  "
+                  alt="logo"
+                  class="w-6 mx-auto"
+                />
+              </div>
+            </div>
 
             @if (registerForm.get('password')?.invalid &&
             registerForm.get('password')?.touched) {
@@ -82,17 +98,35 @@
             >
               Confirm Password
             </label>
-            <input
-              type="password"
-              name="passwordConfirmation"
-              id="passwordConfirmation"
-              placeholder="••••••••"
-              class="bg-dark-2 rounded-lg border border-dark-3 placeholder-gray-400 text-gray-200 focus:ring-primary-600 focus:border-primary-600 outline-none block w-full p-2.5"
-              formControlName="passwordConfirmation"
-            />
+            <div class="relative">
+              <input
+                [type]="showPassword() ? 'text' : 'password'"
+                name="password"
+                id="password"
+                placeholder="••••••••"
+                class="bg-dark-2 rounded-lg border border-dark-3 placeholder-gray-400 text-white outline-none block w-full p-2.5"
+                formControlName="passwordConfirmation"
+              />
+              <div
+                (click)="toggleShowPassword()"
+                class="flex items-center justify-center absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full hover:bg-dark-3 cursor-pointer"
+              >
+                <img
+                  [src]="
+                    showPassword()
+                      ? '/assets/icons/eye-closed.svg'
+                      : '/assets/icons/eye.svg'
+                  "
+                  alt="logo"
+                  class="w-6 mx-auto"
+                />
+              </div>
+            </div>
 
             @if (registerForm.hasError('passwordsMismatch') &&
-            registerForm.touched) {
+            registerForm.get('password')?.value &&
+            registerForm.get('passwordConfirmation')?.value &&
+            registerForm.touched ) {
             <div class="text-red-400 text-sm mt-1">Passwords do not match.</div>
             }
           </div>
@@ -103,7 +137,6 @@
           <button
             type="submit"
             class="bg-primary text-white rounded-xl px-2 h-11 hover:bg-primary-2 cursor-pointer"
-            [disabled]="registerForm.invalid"
           >
             Sign up
           </button>

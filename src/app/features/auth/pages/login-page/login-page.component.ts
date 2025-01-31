@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -20,13 +20,18 @@ export default class LoginPageComponent {
   private router = inject(Router);
   private snackbarService = inject(SnackbarService);
 
+  public showPassword = signal(false);
+
   loginForm: FormGroup = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
   });
 
   onSubmit() {
-    if (this.loginForm.invalid) return;
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
 
     const { email, password } = this.loginForm.value;
 
@@ -46,5 +51,9 @@ export default class LoginPageComponent {
         }
       },
     });
+  }
+
+  toggleShowPassword() {
+    this.showPassword.update((prev) => !prev);
   }
 }

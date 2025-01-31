@@ -14,7 +14,7 @@
           <div>
             <label
               for="email"
-              class="block mb-2 font-semibold text-sm text-gray-300"
+              class="block mb-2 font-semibold text-sm text-gray-100"
             >
               Your email
             </label>
@@ -22,26 +22,61 @@
               type="email"
               name="email"
               id="email"
-              class="bg-dark-2 rounded-lg border border-dark-3 placeholder-gray-400 text-gray-200 outline-none block w-full p-2.5"
+              class="bg-dark-2 rounded-lg border border-dark-3 placeholder-gray-400 text-white outline-none block w-full p-2.5"
               placeholder="name@company.com"
               formControlName="email"
             />
+            @if (loginForm.get('email')?.invalid &&
+            loginForm.get('email')?.touched) {
+            <div class="text-red-400 text-sm mt-1">
+              @if (loginForm.get('email')?.hasError('required')) {
+              <span>Email is required.</span>
+              } @if (loginForm.get('email')?.hasError('email')) {
+              <span>Invalid email format.</span>
+              }
+            </div>
+            }
           </div>
           <div>
             <label
               for="password"
-              class="block mb-2 font-semibold text-sm text-gray-300"
+              class="block mb-2 font-semibold text-sm text-gray-100"
             >
               Password
             </label>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              placeholder="••••••••"
-              class="bg-dark-2 rounded-lg border border-dark-3 placeholder-gray-400 text-gray-200 outline-none block w-full p-2.5"
-              formControlName="password"
-            />
+            <div class="relative">
+              <input
+                [type]="showPassword() ? 'text' : 'password'"
+                name="password"
+                id="password"
+                placeholder="••••••••"
+                class="bg-dark-2 rounded-lg border border-dark-3 placeholder-gray-400 text-white outline-none block w-full p-2.5"
+                formControlName="password"
+              />
+              <div
+                (click)="toggleShowPassword()"
+                class="flex items-center justify-center absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full hover:bg-dark-3 cursor-pointer"
+              >
+                <img
+                  [src]="
+                    showPassword()
+                      ? '/assets/icons/eye-closed.svg'
+                      : '/assets/icons/eye.svg'
+                  "
+                  alt="logo"
+                  class="w-6 mx-auto"
+                />
+              </div>
+            </div>
+
+            @if (loginForm.get('password')?.invalid &&
+            loginForm.get('password')?.touched) {
+            <div class="text-red-400 text-sm mt-1">
+              @if (loginForm.get('password')?.hasError('required')) {
+              <span>Password is required.</span>
+              }
+            </div>
+            }
           </div>
           <div mb-4></div>
           <button

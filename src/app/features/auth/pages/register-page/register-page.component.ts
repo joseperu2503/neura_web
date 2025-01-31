@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -9,6 +9,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { SnackbarService } from '../../../../shared/plugins/snackbar';
 
 @Component({
   selector: 'app-register-page',
@@ -19,6 +20,9 @@ import { AuthService } from '../../services/auth.service';
 export default class RegisterPageComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private snackbarService = inject(SnackbarService);
+
+  public showPassword = signal(false);
 
   registerForm: FormGroup = new FormGroup(
     {
@@ -37,7 +41,10 @@ export default class RegisterPageComponent {
   );
 
   onSubmit() {
-    if (this.registerForm.invalid) return;
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      return;
+    }
 
     const { email, password, passwordConfirmation } = this.registerForm.value;
 
@@ -47,7 +54,15 @@ export default class RegisterPageComponent {
         this.router.navigate(['/chats']);
       },
       error: (err) => {
-        console.error('Register failed', err);
+        if (err.status === 400) {
+          console.log(err)
+          this.snackbarService.show(err.error.message, 'error');
+        } else {
+          this.snackbarService.show(
+            'Something went wrong. Please try again later.',
+            'error'
+          );
+        }
       },
     });
   }
@@ -58,5 +73,9 @@ export default class RegisterPageComponent {
     return password === passwordConfirmation
       ? null
       : { passwordsMismatch: true };
+  }
+
+  toggleShowPassword() {
+    this.showPassword.update((prev) => !prev);
   }
 }
