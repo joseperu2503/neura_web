@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "envs": "node ./scripts/set-envs.js",
+    "start": "npm run envs && ng serve",
+    "build": "npm run envs && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:neura_web": "node dist/neura_web/server/server.mjs"
@@ -22,6 +23,7 @@
     "@angular/router": "^18.2.0",
     "@angular/ssr": "^18.2.12",
     "clipboard": "^2.0.11",
+    "dotenv": "^16.4.7",
     "express": "^4.18.2",
     "jwt-decode": "^4.0.0",
     "ngx-cookie-service-ssr": "^18.0.0",
