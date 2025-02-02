@@ -4,5 +4,5 @@ COPY package*.json ./
 RUN npm install -g @angular/cli
 RUN npm install
 COPY ./scripts ./scripts
-RUN npm run envs
-CMD ["ng", "serve", "--host", "0.0.0.0"]
+
+CMD ["sh", "-c", "npm run envs dev && ng serve --host 0.0.0.0"]

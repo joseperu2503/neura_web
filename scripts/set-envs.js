@@ -1,11 +1,23 @@
 const { writeFileSync, mkdirSync } = require("fs");
 const path = require("path");
+
+// Obtener el entorno desde un argumento de la línea de comandos (si se pasa, será 'dev' o 'prod')
+const envFile = process.argv[2] || ""; // Si no se pasa argumento, se usará un archivo .env por defecto
+
+// Determinar el archivo .env a cargar
+const envFilePath = envFile
+  ? path.resolve(__dirname, `../.env.${envFile}`)
+  : path.resolve(__dirname, "../.env");
+
 require("dotenv").config({
-  path: path.resolve(
-    __dirname,
-    process.env.NODE_ENV === "production" ? "../.env.prod" : "../.env.dev"
-  ),
+  path: envFilePath,
 });
+
+// Verificar si el archivo de entorno existe
+const fs = require("fs");
+if (!fs.existsSync(envFilePath)) {
+  throw new Error(`The environment file ${envFilePath} does not exist.`);
+}
 
 // Archivos para los entornos
 const environment = "./src/environments/environment.ts";
