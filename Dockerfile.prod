@@ -2,9 +2,6 @@ FROM node:20.15.1-alpine3.20 AS builder
 
 WORKDIR /app
 
-# Instalar globalmente Angular CLI
-RUN npm install -g @angular/cli
-
 # Copiar los archivos package*.json
 COPY package*.json ./
 
@@ -15,7 +12,7 @@ RUN npm ci
 COPY . .
 
 # Ejecutar la construcción del proyecto
-RUN npm run envs prod && ng build
+RUN npm run envs prod && npm run build
 
 FROM node:20.15.1-alpine3.20 AS runner
 WORKDIR /app
