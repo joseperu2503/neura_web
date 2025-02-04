@@ -45,12 +45,12 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.trackTestEvent();
-    }
+    // if (isPlatformBrowser(this.platformId)) {
+    //   this.trackTestEvent();
+    // }
   }
 
-  trackTestEvent() {
-    logEvent(this.analytics, 'test_event', { test_param: 'hello world' });
-  }
+  // trackTestEvent() {
+  //   logEvent(this.analytics, 'test_event', { test_param: 'hello world' });
+  // }
 }
