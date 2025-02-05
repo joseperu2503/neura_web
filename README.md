@@ -10,16 +10,6 @@ nano .env.dev
 nano .env.prod
 ```
 
-```bash
-cp src/environments/environment.example.ts src/environments/environment.ts
-cp src/environments/environment.example.ts src/environments/environment.dev.ts
-```
-
-```bash
-nano src/environments/environment.ts
-nano src/environments/environment.dev.ts
-```
-
 ## Para desarrollo
 
 ```bash
