@@ -36,6 +36,7 @@ const envFileContent = `
       appId: "${process.env.FIREBASE_APP_ID}",
       measurementId: "${process.env.FIREBASE_MEASUREMENT_ID}",
     },
+    encryptionKey: "${process.env.ENCRYPTION_KEY}",
   };
 `;
 
