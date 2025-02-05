@@ -18,12 +18,16 @@ import { provideMarkdown } from 'ngx-markdown';
 import { routes } from './app.routes';
 import { tokenInterceptor } from './core/interceptors/token/token.interceptor';
 import { environment } from '../environments/environment';
+import { encryptionInterceptor } from './core/interceptors/encryption/encryption.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withComponentInputBinding()),
-    provideHttpClient(withFetch(), withInterceptors([tokenInterceptor])),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([tokenInterceptor, encryptionInterceptor])
+    ),
     provideClientHydration(),
     provideMarkdown(),
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),

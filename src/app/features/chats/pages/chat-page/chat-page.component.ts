@@ -105,6 +105,7 @@ export default class ChatPageComponent {
   async handleCompletion(prompt: string, isNewChat = false) {
     if (this.internalChatId() == null) {
       const chat = await this.createChat();
+      if (!chat._id) return;
 
       this.chatsStore.setFirstMessage(prompt);
 
