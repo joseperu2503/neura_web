@@ -6,15 +6,19 @@
     class="max-w-4xl w-full mx-auto pt-6 px-6 flex flex-col gap-4"
     #contentDiv
   >
-    @for (message of messages; track message.content) { @if(message.role ==
-    'user'){
+    @for (message of messages(); track $index) {
+    <!--  -->
+    @if(message.role == 'user'){
+
     <app-user-message [text]="message.content" />
 
     } @else{
-    <div>
-      <app-assistant-message [text]="message.content" />
-    </div>
-    } } @if (isLoading()) {
+    <app-assistant-message [text]="message.content" />
+
+    } }
+
+    <!--  -->
+    @if (isLoading()) {
 
     <div class="mb-4">
       <app-typing-loader />

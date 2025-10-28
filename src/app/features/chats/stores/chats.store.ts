@@ -7,10 +7,10 @@ import {
   signal,
 } from '@angular/core';
 
-import { ChatsService } from '../services/chats.service';
-import { Message } from '../interfaces/message.interface';
 import { isPlatformServer } from '@angular/common';
-import { Chat } from '../interfaces/get-chats-response.interface';
+import { Chat } from '../interfaces/chat.interface';
+import { Message } from '../interfaces/message.interface';
+import { ChatsService } from '../services/chats.service';
 
 const CHATS_KEY = makeStateKey<any[]>('chats');
 
@@ -22,9 +22,10 @@ export class ChatsStore {
   private transferState = inject(TransferState);
   private platformId = inject(PLATFORM_ID);
 
-  chats = signal<Chat[]>([]);
-  firstMessage = signal<string | null>(null);
-  messages = signal<{ [key: string]: Message[] }>({});
+  public chats = signal<Chat[]>([]);
+  public internalChatId = signal<string | null>(null);
+  public isLoading = signal<boolean>(false);
+  public isCompleting = signal<boolean>(false);
 
   getChats() {
     // Intenta obtener los chats desde el TransferState
@@ -37,8 +38,34 @@ export class ChatsStore {
     } else {
       // Si no están en el TransferState, haz la solicitud al servidor
       this.chatsService.getChats().subscribe({
-        next: (res: any) => {
-          this.chats.set(res);
+        next: (res) => {
+          //barrer todos los chats y si el chatId ya esta en el array solo actualizar el chat menos los messages
+          this.chats.update((prev) => {
+            // Mapeamos los previos, actualizando los que vinieron en res
+            const updated = prev.map((chat) => {
+              const incoming = res.find((r) => r._id === chat._id);
+              if (incoming) {
+                // Reemplaza los datos del chat, pero mantiene messages
+                return {
+                  ...incoming,
+                  messages: chat.messages,
+                };
+              }
+              return chat; // si no vino en res, se queda igual
+            });
+
+            // Agregamos los que vinieron en res y aún no están en prev
+            const newOnes = res
+              .filter((r) => !prev.some((p) => p._id === r._id))
+              .map((r) => {
+                return {
+                  ...r,
+                  messages: [],
+                };
+              });
+
+            return [...updated, ...newOnes];
+          });
 
           // Almacena los chats en el TransferState para que estén disponibles en el cliente
           if (isPlatformServer(this.platformId)) {
@@ -52,39 +79,51 @@ export class ChatsStore {
   getChat(chatId: string) {
     this.chatsService.getChat(chatId).subscribe({
       next: (res) => {
-        this.messages.update((prev) => {
-          return {
-            ...prev,
-            [res._id]: res.messages,
-          };
+        this.chats.update((prev) => {
+          // Buscar si el chat ya existe
+          const index = prev.findIndex((c) => c._id === chatId);
+          if (index !== -1) {
+            // Si existe, actualizamos todo menos los mensajes
+            const updated = [...prev];
+            updated[index] = {
+              ...res,
+              messages: res.messages, // conserva los mensajes del servicio
+            };
+            return updated;
+          } else {
+            // Si no existe, lo agregamos con mensajes vacíos
+            return [...prev, res];
+          }
         });
       },
     });
   }
 
-  setFirstMessage(prompt: string) {
-    this.firstMessage.set(prompt);
+  addMessage(chatId: string, message: Message) {
+    this.chats.update((prev) => {
+      return prev.map((chat) => {
+        if (chat._id === chatId) {
+          const messages = chat.messages;
+          const index = messages.findIndex((m) => m._id === message._id);
+
+          const updatedMessages =
+            index !== -1
+              ? messages.map((m, i) => (i === index ? message : m))
+              : [...messages, message];
+
+          return {
+            ...chat,
+            messages: updatedMessages,
+          };
+        }
+        return chat;
+      });
+    });
   }
 
-  getFirstMessage() {
-    const firstMessage = this.firstMessage();
-    this.firstMessage.set(null);
-    return firstMessage;
-  }
-
-  addMessage(chatId: string, message: Message, pop = false) {
-    this.messages.update((prev) => {
-      // Si pop es true, eliminamos el último mensaje antes de agregar el nuevo
-      const updatedMessages = prev[chatId]
-        ? pop
-          ? [...prev[chatId].slice(0, -1), message] // Eliminar el último y agregar el nuevo
-          : [...prev[chatId], message] // Solo agregar el nuevo mensaje
-        : [message]; // Si no hay mensajes, solo agregar el primero
-
-      return {
-        ...prev,
-        [chatId]: updatedMessages,
-      };
+  addChat(chat: Chat) {
+    this.chats.update((prev) => {
+      return [...prev, chat];
     });
   }
 }

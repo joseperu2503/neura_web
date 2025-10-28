@@ -1,27 +1,22 @@
 import { inject, Injectable, InjectionToken } from '@angular/core';
-import { JwtPayload, jwtDecode } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { SsrCookieService } from 'ngx-cookie-service-ssr';
 
 export const TOKEN: string = 'token';
 
 export const ACCESS_TOKEN = new InjectionToken<string>(TOKEN);
 
-interface JwtResponse extends JwtPayload {
-  name: string;
+interface JwtPayload {
   id: number;
-  email: string;
+  email: string | null;
+  isGuest: boolean;
+  exp: number;
 }
 
-interface ValidToken {
-  isValid: true;
-  decodedToken: JwtResponse;
+interface JwtInfo {
+  value: string;
+  payload: JwtPayload;
   expireIn: number;
-}
-
-interface InvalidToken {
-  isValid: false;
-  decodedToken: null;
-  expireIn: null;
 }
 
 @Injectable({
@@ -33,59 +28,36 @@ export class TokenService {
     optional: true,
   });
 
-  saveToken(token: string) {
+  saveToken(token: string): void {
     this.cookieService.set(TOKEN, token, { expires: 365, path: '/' });
   }
 
-  getToken() {
-    const token = this.tokenServer ?? this.cookieService.get(TOKEN);
-    // console.log({ token });
-    return token;
-  }
-
-  removeToken() {
+  removeToken(): void {
     this.cookieService.delete(TOKEN);
   }
 
-  validateToken(): ValidToken | InvalidToken {
-    const decodedToken = this.decodeToken();
-    if (!decodedToken) {
-      return {
-        isValid: false,
-        decodedToken: null,
-        expireIn: null,
-      };
-    }
-
-    if (decodedToken && decodedToken?.exp) {
-      const tokenDate = new Date(0);
-      tokenDate.setUTCSeconds(decodedToken.exp);
-      const today = new Date();
-
-      const expireIn = tokenDate.getTime() - today.getTime();
-
-      if (expireIn > 0) {
-        return {
-          isValid: true,
-          decodedToken: decodedToken,
-          expireIn: expireIn,
-        };
-      }
-    }
-
-    return {
-      isValid: false,
-      decodedToken: null,
-      expireIn: null,
-    };
-  }
-
-  decodeToken() {
-    const token = this.getToken();
+  getToken(): JwtInfo | null {
+    const token = this.tokenServer ?? this.cookieService.get(TOKEN);
     if (!token) {
       return null;
     }
-    const decodedToken = jwtDecode<JwtResponse>(token);
-    return decodedToken;
+
+    const payload: JwtPayload = jwtDecode<JwtPayload>(token);
+
+    const tokenDate = new Date(0);
+    tokenDate.setUTCSeconds(payload.exp);
+    const today = new Date();
+
+    const expireIn = tokenDate.getTime() - today.getTime();
+
+    if (expireIn <= 0) {
+      return null;
+    }
+
+    return {
+      value: token,
+      payload: payload,
+      expireIn: expireIn,
+    };
   }
 }

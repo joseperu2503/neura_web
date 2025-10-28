@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
@@ -6,7 +6,6 @@ import { MarkdownModule } from 'ngx-markdown';
   standalone: true,
   imports: [MarkdownModule],
   templateUrl: './assistant-message.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AssistantMessageComponent {
   text = input.required<string>();

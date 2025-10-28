@@ -1,4 +1,4 @@
-FROM node:20.15.1-alpine3.20 AS builder
+FROM node:20.19.5-alpine3.22 AS builder
 
 WORKDIR /app
 
@@ -14,7 +14,7 @@ COPY . .
 # Ejecutar la construcción del proyecto
 RUN npm run envs prod && npm run build
 
-FROM node:20.15.1-alpine3.20 AS runner
+FROM node:20.19.5-alpine3.22 AS runner
 WORKDIR /app
 COPY --from=builder /app/dist/neura_web .
 CMD ["node","server/server.mjs"]

@@ -8,8 +8,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
 import { SnackbarService } from '../../../../shared/plugins/snackbar';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register-page',
@@ -50,12 +50,11 @@ export default class RegisterPageComponent {
 
     this.authService.register(email, password, passwordConfirmation).subscribe({
       next: (user) => {
-        this.authService.saveToken(user.accessToken);
         this.router.navigate(['/chats']);
       },
       error: (err) => {
         if (err.status === 400) {
-          console.log(err)
+          console.log(err);
           this.snackbarService.show(err.error.message, 'error');
         } else {
           this.snackbarService.show(

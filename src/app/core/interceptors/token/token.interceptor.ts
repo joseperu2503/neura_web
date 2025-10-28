@@ -13,7 +13,7 @@ const addToken = (request: HttpRequest<unknown>) => {
   const token = tokenService.getToken();
 
   const authRequest = request.clone({
-    headers: request.headers.set('Authorization', `Bearer ${token}`),
+    headers: request.headers.set('Authorization', `Bearer ${token?.value}`),
   });
   return authRequest;
 };

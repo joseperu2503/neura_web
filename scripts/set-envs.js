@@ -37,6 +37,7 @@ const envFileContent = `
       measurementId: "${process.env.FIREBASE_MEASUREMENT_ID}",
     },
     encryptionKey: "${process.env.ENCRYPTION_KEY}",
+    encryption: ${process.env.ENCRYPTION === 'true'},
   };
 `;
 

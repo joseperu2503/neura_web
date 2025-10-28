@@ -6,8 +6,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
 import { SnackbarService } from '../../../../shared/plugins/snackbar';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login-page',
@@ -37,7 +37,6 @@ export default class LoginPageComponent {
 
     this.authService.login(email, password).subscribe({
       next: (user) => {
-        this.authService.saveToken(user.accessToken);
         this.router.navigate(['/chats']);
       },
       error: (err) => {
