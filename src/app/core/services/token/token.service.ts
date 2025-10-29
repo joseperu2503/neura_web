@@ -33,11 +33,15 @@ export class TokenService {
   }
 
   removeToken(): void {
-    this.cookieService.delete(TOKEN);
+    this.cookieService.delete(TOKEN, '/');
   }
 
   getToken(): JwtInfo | null {
     const token = this.tokenServer ?? this.cookieService.get(TOKEN);
+    console.log({
+      tokenServer: this.tokenServer,
+      cookieService: this.cookieService.get(TOKEN),
+    });
     if (!token) {
       return null;
     }
